@@ -1,0 +1,31 @@
+# Optional HTTPS overlay using Caddy (automatic Let's Encrypt certificates).
+# Use this only if you have a DOMAIN NAME pointed at the VM's public IP.
+#
+# 1. Edit deploy/Caddyfile and replace "yourdomain.com" with your domain.
+# 2. Open ports 80 and 443 in BOTH the OCI Security List and the OS firewall.
+# 3. From the repo root run:
+#      docker compose -f docker-compose.yml -f deploy/docker-compose.caddy.yml up -d --build
+#
+# Caddy terminates TLS and proxies to the app; the app port is no longer
+# exposed directly to the internet.
+services:
+  file-view:
+    ports: []          # stop publishing 3000 publicly; Caddy reaches it internally
+
+  caddy:
+    image: caddy:2
+    container_name: file-view-caddy
+    depends_on:
+      - file-view
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

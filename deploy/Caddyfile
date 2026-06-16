@@ -1,0 +1,5 @@
+# Replace yourdomain.com with the domain pointed at your VM's public IP.
+# Caddy will automatically obtain and renew a Let's Encrypt TLS certificate.
+yourdomain.com {
+    reverse_proxy file-view:3000
+}

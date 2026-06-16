@@ -55,6 +55,21 @@ Make sure `fly.toml` exposes internal port **3000**.
 
 ---
 
+## Oracle Cloud — Always Free (recommended free option)
+
+A free-forever VM with a persistent disk — ideal for SQLite. A one-command
+setup script and full step-by-step walkthrough are in
+**[`deploy/ORACLE.md`](deploy/ORACLE.md)**:
+
+```bash
+git clone <your-repo-url> file-view && cd file-view
+git checkout claude/eloquent-babbage-bw1prb
+chmod +x deploy/oracle-setup.sh
+./deploy/oracle-setup.sh
+```
+
+The same script also works on Google Cloud / AWS free-tier VMs.
+
 ## Any VM (AWS EC2 / GCP / Azure / DigitalOcean)
 
 The simplest, fully self-controlled option:
