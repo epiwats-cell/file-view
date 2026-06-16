@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1><%= isNew ? 'Add File Share' : 'Edit File Share' %></h1>
+</div>
+<section class="panel">
+  <% if (!servers.length) { %>
+    <p class="muted">You need to create a server first. <a href="/shares/servers/new">Add a server</a>.</p>
+  <% } else { %>
+  <form method="post" action="<%= action %>" class="form">
+    <div class="form-row">
+      <label>Server *
+        <select name="server_id" required>
+          <option value="">Select a server...</option>
+          <% servers.forEach(s => { %>
+            <option value="<%= s.id %>" <%= String(share.server_id) === String(s.id) ? 'selected' : '' %>><%= s.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Share name *
+        <input type="text" name="name" value="<%= share.name || '' %>" placeholder="e.g. Finance" required />
+      </label>
+    </div>
+    <label>Path
+      <input type="text" name="path" value="<%= share.path || '' %>" placeholder="e.g. \\FS-HQ-01\Finance" />
+    </label>
+    <label>Description
+      <textarea name="description" rows="2"><%= share.description || '' %></textarea>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit"><%= isNew ? 'Create share' : 'Save changes' %></button>
+      <a class="btn btn-ghost" href="<%= isNew ? '/shares' : '/shares/' + share.id %>">Cancel</a>
+    </div>
+  </form>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

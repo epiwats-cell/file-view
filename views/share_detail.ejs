@@ -1,0 +1,86 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <div>
+    <a class="back" href="/shares">&larr; File Shares</a>
+    <h1><%= share.name %></h1>
+    <p class="muted">on <a href="/shares/servers/<%= share.server_id %>"><%= share.server_name %></a></p>
+  </div>
+  <div class="actions">
+    <a class="btn btn-ghost" href="/shares/<%= share.id %>/edit">Edit</a>
+    <form method="post" action="/shares/<%= share.id %>/delete" class="inline" onsubmit="return confirm('Delete this file share?');">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Details</h2>
+    <dl class="kv">
+      <dt>Server</dt><dd><%= share.server_name %></dd>
+      <dt>Path</dt><dd class="mono"><%= share.path || '-' %></dd>
+      <dt>Description</dt><dd><%= share.description || '-' %></dd>
+      <dt>Created</dt><dd><%= share.created_at %></dd>
+    </dl>
+  </section>
+
+  <section class="panel">
+    <h2>Grant access to a user</h2>
+    <form method="post" action="/access/grant" class="form">
+      <input type="hidden" name="share_id" value="<%= share.id %>" />
+      <input type="hidden" name="redirect" value="/shares/<%= share.id %>" />
+      <label>User
+        <select name="user_id" required>
+          <option value="">Select a user...</option>
+          <% availableUsers.forEach(u => { %>
+            <option value="<%= u.id %>"><%= u.full_name %> (<%= u.username %>)<%= u.department ? ' · ' + u.department : '' %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Permission
+        <select name="permission">
+          <option value="read">read</option>
+          <option value="write">write</option>
+          <option value="full">full</option>
+        </select>
+      </label>
+      <button class="btn btn-primary" type="submit" <%= availableUsers.length ? '' : 'disabled' %>>Grant access</button>
+      <% if (!availableUsers.length) { %><p class="muted small">Every user already has access to this share.</p><% } %>
+    </form>
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Users with access (<%= grants.length %>)</h2>
+  <table class="table">
+    <thead><tr><th>User</th><th>Username</th><th>Department</th><th>Permission</th><th>Granted</th><th></th></tr></thead>
+    <tbody>
+      <% grants.forEach(g => { %>
+        <tr>
+          <td><a href="/users/<%= g.user_id %>"><%= g.full_name %></a></td>
+          <td><%= g.username %></td>
+          <td><%= g.department || '-' %></td>
+          <td>
+            <form method="post" action="/access/<%= g.access_id %>/permission" class="inline">
+              <input type="hidden" name="redirect" value="/shares/<%= share.id %>" />
+              <select name="permission" onchange="this.form.submit()">
+                <option value="read" <%= g.permission==='read'?'selected':'' %>>read</option>
+                <option value="write" <%= g.permission==='write'?'selected':'' %>>write</option>
+                <option value="full" <%= g.permission==='full'?'selected':'' %>>full</option>
+              </select>
+            </form>
+          </td>
+          <td class="muted small"><%= g.granted_at %><br><%= g.granted_by || '' %></td>
+          <td>
+            <form method="post" action="/access/<%= g.access_id %>/revoke" class="inline" onsubmit="return confirm('Revoke this access?');">
+              <input type="hidden" name="redirect" value="/shares/<%= share.id %>" />
+              <button class="btn btn-danger btn-sm" type="submit">Revoke</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (!grants.length) { %><tr><td colspan="6" class="muted">No users have access yet.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

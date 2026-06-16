@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1><%= isNew ? 'Add User' : 'Edit User' %></h1>
+</div>
+<section class="panel">
+  <form method="post" action="<%= action %>" class="form">
+    <div class="form-row">
+      <label>Full name *
+        <input type="text" name="full_name" value="<%= user.full_name || '' %>" required />
+      </label>
+      <label>Username *
+        <input type="text" name="username" value="<%= user.username || '' %>" required />
+      </label>
+    </div>
+    <div class="form-row">
+      <label>Employee ID
+        <input type="text" name="employee_id" value="<%= user.employee_id || '' %>" />
+      </label>
+      <label>Email
+        <input type="email" name="email" value="<%= user.email || '' %>" />
+      </label>
+    </div>
+    <div class="form-row">
+      <label>Department
+        <input type="text" name="department" value="<%= user.department || '' %>" />
+      </label>
+      <label>Title
+        <input type="text" name="title" value="<%= user.title || '' %>" />
+      </label>
+    </div>
+    <div class="form-row">
+      <label>Status
+        <select name="status">
+          <option value="active" <%= user.status === 'active' || !user.status ? 'selected' : '' %>>active</option>
+          <option value="inactive" <%= user.status === 'inactive' ? 'selected' : '' %>>inactive</option>
+        </select>
+      </label>
+    </div>
+    <label>Note
+      <textarea name="note" rows="2"><%= user.note || '' %></textarea>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit"><%= isNew ? 'Create user' : 'Save changes' %></button>
+      <a class="btn btn-ghost" href="<%= isNew ? '/users' : '/users/' + user.id %>">Cancel</a>
+    </div>
+  </form>
+</section>
+<%- include('partials/footer') %>

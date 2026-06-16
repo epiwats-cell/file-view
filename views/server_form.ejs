@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1><%= isNew ? 'Add File Share Server' : 'Edit Server' %></h1>
+</div>
+<section class="panel">
+  <form method="post" action="<%= action %>" class="form">
+    <div class="form-row">
+      <label>Server name *
+        <input type="text" name="name" value="<%= server.name || '' %>" placeholder="e.g. FS-HQ-01" required />
+      </label>
+      <label>Host / IP
+        <input type="text" name="host" value="<%= server.host || '' %>" placeholder="e.g. 10.0.0.10" />
+      </label>
+    </div>
+    <label>Location
+      <input type="text" name="location" value="<%= server.location || '' %>" placeholder="e.g. Head Office" />
+    </label>
+    <label>Description
+      <textarea name="description" rows="2"><%= server.description || '' %></textarea>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit"><%= isNew ? 'Create server' : 'Save changes' %></button>
+      <a class="btn btn-ghost" href="<%= isNew ? '/shares' : '/shares/servers/' + server.id %>">Cancel</a>
+    </div>
+  </form>
+</section>
+<%- include('partials/footer') %>

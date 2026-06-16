@@ -1,0 +1,5 @@
+server,host,location,server_description,share,path,share_description
+FS-BR-03,10.0.2.30,Branch Office,Branch file server,Sales,\\FS-BR-03\Sales,Sales documents
+FS-BR-03,10.0.2.30,Branch Office,Branch file server,Marketing,\\FS-BR-03\Marketing,Marketing assets
+FS-BR-03,10.0.2.30,Branch Office,Branch file server,Common,\\FS-BR-03\Common,Shared branch folder
+FS-DC-02,10.0.1.20,Data Center,Secondary server,Archive,\\FS-DC-02\Archive,Long-term archive

@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Users</h1>
+  <div class="actions">
+    <a class="btn btn-ghost" href="/import">Import</a>
+    <a class="btn btn-ghost" href="/reports/export/users.csv">Export CSV</a>
+    <a class="btn btn-primary" href="/users/new">+ Add User</a>
+  </div>
+</div>
+
+<form method="get" action="/users" class="filterbar">
+  <input type="text" name="q" value="<%= q %>" placeholder="Search name, username, ID, email..." />
+  <select name="dept">
+    <option value="">All departments</option>
+    <% departments.forEach(d => { %>
+      <option value="<%= d %>" <%= d === dept ? 'selected' : '' %>><%= d %></option>
+    <% }) %>
+  </select>
+  <button class="btn" type="submit">Filter</button>
+  <% if (q || dept) { %><a class="btn btn-ghost" href="/users">Clear</a><% } %>
+</form>
+
+<section class="panel">
+  <table class="table">
+    <thead>
+      <tr><th>Name</th><th>Username</th><th>Emp ID</th><th>Department</th><th>Status</th><th class="num">Shares</th></tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><a href="/users/<%= u.id %>"><%= u.full_name %></a></td>
+          <td><%= u.username %></td>
+          <td><%= u.employee_id || '-' %></td>
+          <td><%= u.department || '-' %></td>
+          <td><span class="badge badge-<%= u.status === 'active' ? 'ok' : 'off' %>"><%= u.status %></span></td>
+          <td class="num"><%= u.share_count %></td>
+        </tr>
+      <% }) %>
+      <% if (!users.length) { %><tr><td colspan="6" class="muted">No users found.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<p class="muted small"><%= users.length %> user(s)</p>
+<%- include('partials/footer') %>

@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Dashboard</h1>
+</div>
+
+<div class="stat-grid">
+  <a class="stat-card" href="/users">
+    <div class="stat-num"><%= stats.users %></div>
+    <div class="stat-label">Users <span class="muted small">(<%= stats.activeUsers %> active)</span></div>
+  </a>
+  <a class="stat-card" href="/shares">
+    <div class="stat-num"><%= stats.servers %></div>
+    <div class="stat-label">File Share Servers</div>
+  </a>
+  <a class="stat-card" href="/shares">
+    <div class="stat-num"><%= stats.shares %></div>
+    <div class="stat-label">File Shares</div>
+  </a>
+  <a class="stat-card" href="/reports">
+    <div class="stat-num"><%= stats.grants %></div>
+    <div class="stat-label">Access Grants</div>
+  </a>
+</div>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Top users by access</h2>
+    <table class="table">
+      <thead><tr><th>User</th><th>Department</th><th class="num">Shares</th></tr></thead>
+      <tbody>
+        <% topUsers.forEach(u => { %>
+          <tr>
+            <td><a href="/users/<%= u.id %>"><%= u.full_name %></a></td>
+            <td><%= u.department || '-' %></td>
+            <td class="num"><%= u.shares %></td>
+          </tr>
+        <% }) %>
+        <% if (!topUsers.length) { %><tr><td colspan="3" class="muted">No users yet.</td></tr><% } %>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>Most-shared folders</h2>
+    <table class="table">
+      <thead><tr><th>Share</th><th>Server</th><th class="num">Users</th></tr></thead>
+      <tbody>
+        <% topShares.forEach(s => { %>
+          <tr>
+            <td><a href="/shares/<%= s.id %>"><%= s.name %></a></td>
+            <td><%= s.server %></td>
+            <td class="num"><%= s.users %></td>
+          </tr>
+        <% }) %>
+        <% if (!topShares.length) { %><tr><td colspan="3" class="muted">No shares yet.</td></tr><% } %>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Recent activity</h2>
+  <table class="table">
+    <thead><tr><th>When</th><th>Who</th><th>Action</th><th>Detail</th></tr></thead>
+    <tbody>
+      <% recent.forEach(r => { %>
+        <tr>
+          <td class="muted small"><%= r.created_at %></td>
+          <td><%= r.actor %></td>
+          <td><span class="tag"><%= r.action %></span></td>
+          <td class="muted"><%= r.detail %></td>
+        </tr>
+      <% }) %>
+      <% if (!recent.length) { %><tr><td colspan="4" class="muted">No activity yet.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

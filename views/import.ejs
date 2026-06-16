@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Import Data</h1>
+</div>
+
+<% if (result) { %>
+  <section class="panel">
+    <h2><%= result.kind %> import result</h2>
+    <ul class="result-list">
+      <li>Total rows: <strong><%= result.total %></strong></li>
+      <li>Imported / updated: <strong class="ok"><%= result.ok %></strong></li>
+      <% if (typeof result.servers !== 'undefined') { %><li>New servers created: <strong><%= result.servers %></strong></li><% } %>
+      <li>Skipped: <strong class="<%= result.skipped ? 'warn' : '' %>"><%= result.skipped %></strong></li>
+    </ul>
+    <% if (result.errors && result.errors.length) { %>
+      <details open>
+        <summary><%= result.errors.length %> problem(s)</summary>
+        <ul class="muted small">
+          <% result.errors.slice(0, 50).forEach(e => { %><li><%= e %></li><% }) %>
+        </ul>
+      </details>
+    <% } %>
+    <a class="btn btn-ghost" href="/import">Import more</a>
+  </section>
+<% } %>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Import Users</h2>
+    <p class="muted small">CSV columns: <code>employee_id, username, full_name, email, department, title, status</code>.
+      Existing users (matched by <code>username</code>) are updated.</p>
+    <form method="post" action="/import/users" enctype="multipart/form-data" class="form">
+      <input type="file" name="file" accept=".csv,text/csv" required />
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Upload &amp; import users</button>
+        <a class="btn btn-ghost" href="/import/template/users.csv">Download template</a>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Import File Share Servers</h2>
+    <p class="muted small">CSV columns: <code>server, host, location, server_description, share, path, share_description</code>.
+      Servers are created on demand; each row may add one sub file share.</p>
+    <form method="post" action="/import/shares" enctype="multipart/form-data" class="form">
+      <input type="file" name="file" accept=".csv,text/csv" required />
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Upload &amp; import shares</button>
+        <a class="btn btn-ghost" href="/import/template/shares.csv">Download template</a>
+      </div>
+    </form>
+  </section>
+</div>
+<%- include('partials/footer') %>

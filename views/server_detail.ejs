@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <div>
+    <a class="back" href="/shares">&larr; File Shares</a>
+    <h1><%= server.name %></h1>
+  </div>
+  <div class="actions">
+    <a class="btn btn-ghost" href="/shares/new?server=<%= server.id %>">+ Add Share</a>
+    <a class="btn btn-ghost" href="/shares/servers/<%= server.id %>/edit">Edit</a>
+    <form method="post" action="/shares/servers/<%= server.id %>/delete" class="inline" onsubmit="return confirm('Delete this server and ALL its shares?');">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<section class="panel">
+  <dl class="kv">
+    <dt>Host / IP</dt><dd class="mono"><%= server.host || '-' %></dd>
+    <dt>Location</dt><dd><%= server.location || '-' %></dd>
+    <dt>Description</dt><dd><%= server.description || '-' %></dd>
+    <dt>Created</dt><dd><%= server.created_at %></dd>
+  </dl>
+</section>
+
+<section class="panel">
+  <h2>File shares on this server (<%= shares.length %>)</h2>
+  <table class="table">
+    <thead><tr><th>Share</th><th>Path</th><th>Description</th><th class="num">Users</th></tr></thead>
+    <tbody>
+      <% shares.forEach(s => { %>
+        <tr>
+          <td><a href="/shares/<%= s.id %>"><%= s.name %></a></td>
+          <td class="mono small"><%= s.path || '-' %></td>
+          <td class="muted"><%= s.description || '-' %></td>
+          <td class="num"><%= s.user_count %></td>
+        </tr>
+      <% }) %>
+      <% if (!shares.length) { %><tr><td colspan="4" class="muted">No shares on this server yet.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

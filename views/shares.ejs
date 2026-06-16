@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>File Shares</h1>
+  <div class="actions">
+    <a class="btn btn-ghost" href="/import">Import</a>
+    <a class="btn btn-ghost" href="/reports/export/shares.csv">Export CSV</a>
+    <a class="btn btn-ghost" href="/shares/servers/new">+ Add Server</a>
+    <a class="btn btn-primary" href="/shares/new">+ Add File Share</a>
+  </div>
+</div>
+
+<section class="panel">
+  <h2>Servers (<%= servers.length %>)</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Host</th><th>Location</th><th class="num">Shares</th><th></th></tr></thead>
+    <tbody>
+      <% servers.forEach(s => { %>
+        <tr>
+          <td><a href="/shares/servers/<%= s.id %>"><%= s.name %></a></td>
+          <td class="mono small"><%= s.host || '-' %></td>
+          <td><%= s.location || '-' %></td>
+          <td class="num"><%= s.share_count %></td>
+          <td><a class="btn btn-ghost btn-sm" href="/shares/new?server=<%= s.id %>">+ Share</a></td>
+        </tr>
+      <% }) %>
+      <% if (!servers.length) { %><tr><td colspan="5" class="muted">No servers yet.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+
+<form method="get" action="/shares" class="filterbar">
+  <input type="text" name="q" value="<%= q %>" placeholder="Search shares by name, path, server..." />
+  <button class="btn" type="submit">Filter</button>
+  <% if (q) { %><a class="btn btn-ghost" href="/shares">Clear</a><% } %>
+</form>
+
+<section class="panel">
+  <h2>All file shares (<%= shares.length %>)</h2>
+  <table class="table">
+    <thead><tr><th>Share</th><th>Server</th><th>Path</th><th class="num">Users</th></tr></thead>
+    <tbody>
+      <% shares.forEach(s => { %>
+        <tr>
+          <td><a href="/shares/<%= s.id %>"><%= s.name %></a></td>
+          <td><%= s.server_name %></td>
+          <td class="mono small"><%= s.path || '-' %></td>
+          <td class="num"><%= s.user_count %></td>
+        </tr>
+      <% }) %>
+      <% if (!shares.length) { %><tr><td colspan="4" class="muted">No file shares found.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

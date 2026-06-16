@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Reports</h1>
+  <div class="actions">
+    <a class="btn btn-ghost" href="/reports/export/users.csv">Users CSV</a>
+    <a class="btn btn-ghost" href="/reports/export/shares.csv">Shares CSV</a>
+    <a class="btn btn-primary" href="/reports/export/access.csv">Access matrix CSV</a>
+  </div>
+</div>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Access by department</h2>
+    <table class="table">
+      <thead><tr><th>Department</th><th class="num">Users</th><th class="num">Grants</th></tr></thead>
+      <tbody>
+        <% byDept.forEach(d => { %>
+          <tr><td><%= d.department %></td><td class="num"><%= d.users %></td><td class="num"><%= d.grants %></td></tr>
+        <% }) %>
+        <% if (!byDept.length) { %><tr><td colspan="3" class="muted">No data.</td></tr><% } %>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>Attention needed</h2>
+    <h3 class="sub">Users without any access (<%= usersNoAccess.length %>)</h3>
+    <ul class="chips">
+      <% usersNoAccess.forEach(u => { %><li><a href="/users/<%= u.id %>"><%= u.full_name %></a></li><% }) %>
+      <% if (!usersNoAccess.length) { %><li class="muted">None 🎉</li><% } %>
+    </ul>
+    <h3 class="sub">Shares without any users (<%= sharesNoUsers.length %>)</h3>
+    <ul class="chips">
+      <% sharesNoUsers.forEach(s => { %><li><%= s.server %> / <%= s.share %></li><% }) %>
+      <% if (!sharesNoUsers.length) { %><li class="muted">None 🎉</li><% } %>
+    </ul>
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Full access matrix (<%= rows.length %> grants)</h2>
+  <table class="table">
+    <thead>
+      <tr><th>User</th><th>Department</th><th>Server</th><th>Share</th><th>Path</th><th>Permission</th><th>Granted by</th><th>Granted at</th></tr>
+    </thead>
+    <tbody>
+      <% rows.forEach(r => { %>
+        <tr>
+          <td><%= r.full_name %></td>
+          <td><%= r.department || '-' %></td>
+          <td><%= r.server %></td>
+          <td><%= r.share %></td>
+          <td class="mono small"><%= r.path || '-' %></td>
+          <td><span class="badge badge-perm"><%= r.permission %></span></td>
+          <td class="muted small"><%= r.granted_by || '-' %></td>
+          <td class="muted small"><%= r.granted_at %></td>
+        </tr>
+      <% }) %>
+      <% if (!rows.length) { %><tr><td colspan="8" class="muted">No access grants yet.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · File-View</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>" />
+</head>
+<body>
+<% if (typeof admin !== 'undefined' && admin) { %>
+  <header class="topbar">
+    <a class="brand" href="/dashboard">📁 File-View</a>
+    <nav class="mainnav">
+      <a href="/dashboard" class="<%= currentPath.startsWith('/dashboard') ? 'active' : '' %>">Dashboard</a>
+      <a href="/users" class="<%= currentPath.startsWith('/users') ? 'active' : '' %>">Users</a>
+      <a href="/shares" class="<%= currentPath.startsWith('/shares') ? 'active' : '' %>">File Shares</a>
+      <a href="/reports" class="<%= currentPath.startsWith('/reports') ? 'active' : '' %>">Reports</a>
+      <a href="/import" class="<%= currentPath.startsWith('/import') ? 'active' : '' %>">Import</a>
+      <a href="/admins" class="<%= currentPath.startsWith('/admins') ? 'active' : '' %>">Admins</a>
+    </nav>
+    <div class="userbox">
+      <span class="who"><%= admin.full_name || admin.username %></span>
+      <form method="post" action="/logout" class="inline">
+        <button class="btn btn-ghost btn-sm" type="submit">Sign out</button>
+      </form>
+    </div>
+  </header>
+<% } %>
+<main class="container">
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>

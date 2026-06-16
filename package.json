@@ -1,0 +1,29 @@
+{
+  "name": "file-view",
+  "version": "1.0.0",
+  "description": "File Share Access Management System - manage which users have access to which file shares",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "fileshare",
+    "access-management",
+    "admin"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "connect-sqlite3": "^0.9.15",
+    "csv-parse": "^5.5.6",
+    "csv-stringify": "^6.5.1",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}

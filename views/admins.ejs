@@ -1,0 +1,52 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Admin Accounts</h1>
+</div>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Add admin</h2>
+    <form method="post" action="/admins" class="form">
+      <label>Username *
+        <input type="text" name="username" required />
+      </label>
+      <label>Full name
+        <input type="text" name="full_name" />
+      </label>
+      <label>Password *
+        <input type="password" name="password" required />
+      </label>
+      <button class="btn btn-primary" type="submit">Create admin</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Existing admins (<%= admins.length %>)</h2>
+    <table class="table">
+      <thead><tr><th>Username</th><th>Name</th><th>Created</th><th>Change password</th><th></th></tr></thead>
+      <tbody>
+        <% admins.forEach(a => { %>
+          <tr>
+            <td><%= a.username %><%= a.id === admin.id ? ' (you)' : '' %></td>
+            <td><%= a.full_name || '-' %></td>
+            <td class="muted small"><%= a.created_at %></td>
+            <td>
+              <form method="post" action="/admins/<%= a.id %>/password" class="inline">
+                <input type="password" name="password" placeholder="New password" required />
+                <button class="btn btn-sm" type="submit">Set</button>
+              </form>
+            </td>
+            <td>
+              <% if (a.id !== admin.id) { %>
+                <form method="post" action="/admins/<%= a.id %>/delete" class="inline" onsubmit="return confirm('Delete this admin?');">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+</div>
+<%- include('partials/footer') %>
