@@ -6,6 +6,7 @@ const session = require('express-session');
 const SQLiteStore = require('connect-sqlite3')(session);
 
 const { DATA_DIR } = require('./db');
+const { ensureAdmin } = require('./bootstrap');
 const { requireAuth, attachUser } = require('./middleware/auth');
 
 const authRoutes = require('./routes/auth');
@@ -82,6 +83,8 @@ app.use((err, req, res, next) => {
     message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred.' : err.message,
   });
 });
+
+ensureAdmin();
 
 app.listen(PORT, () => {
   console.log(`File-View running at http://localhost:${PORT}`);

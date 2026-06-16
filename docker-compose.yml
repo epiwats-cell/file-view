@@ -1,0 +1,15 @@
+services:
+  file-view:
+    build: .
+    container_name: file-view
+    ports:
+      - "3000:3000"
+    environment:
+      # Change these before first run for a custom admin / secure session.
+      ADMIN_USER: admin
+      ADMIN_PASS: admin1234
+      SESSION_SECRET: please-change-this-secret
+    volumes:
+      # Persist the SQLite database outside the container.
+      - ./data:/app/data
+    restart: unless-stopped

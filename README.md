@@ -35,15 +35,34 @@ creating users / servers / sub file shares, CSV import, reporting, and an
 - EJS server-rendered views
 - Session store persisted with `connect-sqlite3`
 
-## Getting started
+## Run it on your computer
+
+### Option A — Node.js (simplest)
+
+Requires [Node.js 18+](https://nodejs.org).
 
 ```bash
-npm install          # install dependencies
-npm run seed         # create the default admin + demo data
-npm start            # start the server (http://localhost:3000)
+npm install     # install dependencies
+npm start       # starts on http://localhost:3000 (auto-creates the admin)
 ```
 
-Then open <http://localhost:3000> and sign in.
+That's it — on first run the app automatically creates the default admin
+account, so you can sign in right away. Open <http://localhost:3000>.
+
+Want demo users/shares to play with too? Run `npm run seed` once before
+`npm start`.
+
+### Option B — Docker (no Node.js needed)
+
+Requires [Docker](https://docs.docker.com/get-docker/).
+
+```bash
+docker compose up --build
+```
+
+Open <http://localhost:3000>. The SQLite database is stored in `./data` on your
+machine, so your data survives container restarts. Edit `docker-compose.yml` to
+change the admin credentials / session secret before the first run.
 
 ### Default admin credentials
 
@@ -100,7 +119,10 @@ to back up the system.
 ```
 server.js            Express app + route wiring
 db.js                SQLite schema + audit helper
-seed.js              Default admin + demo data
+bootstrap.js         Auto-creates the default admin on startup
+seed.js              Default admin + demo data (npm run seed)
+Dockerfile           Container image
+docker-compose.yml   One-command Docker deployment
 middleware/auth.js   Session auth guards
 routes/              auth, dashboard, users, shares, access, import, reports, admins
 views/               EJS templates
