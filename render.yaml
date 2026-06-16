@@ -1,0 +1,30 @@
+# Render Blueprint for File-View
+# Deploy: push this repo to GitHub, then in Render -> "New +" -> "Blueprint"
+# and point it at the repo. Render reads this file automatically.
+#
+# NOTE: The persistent disk below (required so the SQLite database survives
+# deploys/restarts) needs a paid instance type. The free tier has no
+# persistent disk and would lose data on every redeploy.
+services:
+  - type: web
+    name: file-view
+    runtime: docker          # builds from the Dockerfile in this repo
+    plan: starter            # required for persistent disk support
+    region: singapore        # change to your nearest region if you like
+    healthCheckPath: /login
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true  # Render generates a strong random secret
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        sync: false          # set this yourself in the Render dashboard (secret)
+    disk:
+      name: file-view-data
+      mountPath: /app/data   # SQLite database lives here
+      sizeGB: 1
