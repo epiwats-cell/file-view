@@ -42,6 +42,19 @@ fi
 SUDO=""
 if [[ $EUID -ne 0 ]]; then SUDO="sudo"; fi
 
+# --- add swap on low-memory VMs (e.g. E2.1.Micro has only 1 GB RAM) so the
+#     first Docker build of the native better-sqlite3 module doesn't get OOM-killed ---
+MEM_MB=$(awk '/MemTotal/{print int($2/1024)}' /proc/meminfo 2>/dev/null || echo 9999)
+if [[ "$MEM_MB" -lt 1500 && ! -e /swapfile ]]; then
+  log "Low memory detected (${MEM_MB} MB) - creating a 2 GB swap file..."
+  $SUDO fallocate -l 2G /swapfile 2>/dev/null || $SUDO dd if=/dev/zero of=/swapfile bs=1M count=2048
+  $SUDO chmod 600 /swapfile
+  $SUDO mkswap /swapfile >/dev/null
+  $SUDO swapon /swapfile
+  grep -q '/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' | $SUDO tee -a /etc/fstab >/dev/null
+  log "Swap enabled."
+fi
+
 # --- install Docker if needed ---
 if ! command -v docker >/dev/null 2>&1; then
   log "Installing Docker ($PKG)..."
