@@ -77,7 +77,7 @@ router.get('/export/access.csv', (req, res) => {
 // Export users as CSV.
 router.get('/export/users.csv', (req, res) => {
   const rows = db
-    .prepare('SELECT employee_id, username, full_name, email, department, title, status FROM users ORDER BY full_name')
+    .prepare('SELECT employee_id, username, first_name, last_name, full_name, email, department, title, status FROM users ORDER BY full_name')
     .all();
   const csv = stringify(rows, { header: true });
   res.type('text/csv').attachment('users-report.csv').send(csv);

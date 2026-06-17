@@ -23,12 +23,13 @@
 <section class="panel">
   <table class="table">
     <thead>
-      <tr><th>Name</th><th>Username</th><th>Emp ID</th><th>Department</th><th>Status</th><th class="num">Shares</th></tr>
+      <tr><th>First Name</th><th>Last Name</th><th>Username</th><th>Emp ID</th><th>Department</th><th>Status</th><th class="num">Shares</th></tr>
     </thead>
     <tbody>
       <% users.forEach(u => { %>
         <tr>
-          <td><a href="/users/<%= u.id %>"><%= u.full_name %></a></td>
+          <td><a href="/users/<%= u.id %>"><%= u.first_name || u.full_name %></a></td>
+          <td><%= u.last_name || '' %></td>
           <td><%= u.username %></td>
           <td><%= u.employee_id || '-' %></td>
           <td><%= u.department || '-' %></td>
@@ -36,7 +37,7 @@
           <td class="num"><%= u.share_count %></td>
         </tr>
       <% }) %>
-      <% if (!users.length) { %><tr><td colspan="6" class="muted">No users found.</td></tr><% } %>
+      <% if (!users.length) { %><tr><td colspan="7" class="muted">No users found.</td></tr><% } %>
     </tbody>
   </table>
 </section>

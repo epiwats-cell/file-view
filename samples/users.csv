@@ -1,5 +1,5 @@
-employee_id,username,full_name,email,department,title,status
-EMP010,anan,Anan Wong,anan@example.com,Sales,Sales Rep,active
-EMP011,bee,Bee Suk,bee@example.com,Marketing,Designer,active
-EMP012,chai,Chai Mongkol,chai@example.com,IT,Developer,active
-EMP013,dao,Dao Ploy,dao@example.com,Finance,Auditor,inactive
+employee_id,username,first_name,last_name,email,department,title,status
+EMP010,anan,Anan,Wong,anan@example.com,Sales,Sales Rep,active
+EMP011,bee,Bee,Suk,bee@example.com,Marketing,Designer,active
+EMP012,chai,Chai,Mongkol,chai@example.com,IT,Developer,active
+EMP013,dao,Dao,Ploy,dao@example.com,Finance,Auditor,inactive

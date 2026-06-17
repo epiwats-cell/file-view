@@ -27,7 +27,8 @@
 <div class="two-col">
   <section class="panel">
     <h2>Import Users</h2>
-    <p class="muted small">CSV columns: <code>employee_id, username, full_name, email, department, title, status</code>.
+    <p class="muted small">CSV columns: <code>employee_id, username, first_name, last_name, email, department, title, status</code>.
+      A single <code>full_name</code> column is also accepted (it is split into first/last).
       Existing users (matched by <code>username</code>) are updated.</p>
     <form method="post" action="/import/users" enctype="multipart/form-data" class="form">
       <input type="file" name="file" accept=".csv,text/csv" required />

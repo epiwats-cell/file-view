@@ -15,9 +15,11 @@ router.get('/', (req, res) => {
   const where = [];
   const params = [];
   if (q) {
-    where.push('(u.full_name LIKE ? OR u.username LIKE ? OR u.employee_id LIKE ? OR u.email LIKE ?)');
+    where.push(
+      '(u.full_name LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.username LIKE ? OR u.employee_id LIKE ? OR u.email LIKE ?)'
+    );
     const like = `%${q}%`;
-    params.push(like, like, like, like);
+    params.push(like, like, like, like, like, like);
   }
   if (dept) {
     where.push('u.department = ?');
@@ -42,21 +44,26 @@ router.get('/new', (req, res) => {
 
 // Create user.
 router.post('/', (req, res) => {
-  const { employee_id, username, full_name, email, department, title, status, note } = req.body;
-  if (!username || !full_name) {
-    req.session.flash = { type: 'error', message: 'Username and full name are required.' };
+  const { employee_id, username, first_name, last_name, email, department, title, status, note } = req.body;
+  const firstName = (first_name || '').trim();
+  const lastName = (last_name || '').trim();
+  const fullName = `${firstName} ${lastName}`.trim();
+  if (!username || !firstName) {
+    req.session.flash = { type: 'error', message: 'Username and first name are required.' };
     return res.redirect('/users/new');
   }
   try {
     const info = db
       .prepare(
-        `INSERT INTO users (employee_id, username, full_name, email, department, title, status, note)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO users (employee_id, username, full_name, first_name, last_name, email, department, title, status, note)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         employee_id || null,
         username.trim(),
-        full_name.trim(),
+        fullName,
+        firstName,
+        lastName || null,
         email || null,
         department || null,
         title || null,
@@ -64,7 +71,7 @@ router.post('/', (req, res) => {
         note || null
       );
     logAudit(res.locals.admin.username, 'user.create', `user ${username} (#${info.lastInsertRowid})`);
-    req.session.flash = { type: 'success', message: `User "${full_name}" added.` };
+    req.session.flash = { type: 'success', message: `User "${fullName}" added.` };
     res.redirect(`/users/${info.lastInsertRowid}`);
   } catch (e) {
     req.session.flash = { type: 'error', message: 'Could not add user: ' + e.message };
@@ -114,15 +121,24 @@ router.get('/:id/edit', (req, res, next) => {
 router.post('/:id', (req, res, next) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id);
   if (!user) return next();
-  const { employee_id, username, full_name, email, department, title, status, note } = req.body;
+  const { employee_id, username, first_name, last_name, email, department, title, status, note } = req.body;
+  const firstName = (first_name || '').trim();
+  const lastName = (last_name || '').trim();
+  const fullName = `${firstName} ${lastName}`.trim();
+  if (!username || !firstName) {
+    req.session.flash = { type: 'error', message: 'Username and first name are required.' };
+    return res.redirect(`/users/${user.id}/edit`);
+  }
   try {
     db.prepare(
-      `UPDATE users SET employee_id=?, username=?, full_name=?, email=?, department=?, title=?, status=?, note=?
+      `UPDATE users SET employee_id=?, username=?, full_name=?, first_name=?, last_name=?, email=?, department=?, title=?, status=?, note=?
        WHERE id=?`
     ).run(
       employee_id || null,
       username.trim(),
-      full_name.trim(),
+      fullName,
+      firstName,
+      lastName || null,
       email || null,
       department || null,
       title || null,

@@ -27,6 +27,8 @@ db.exec(`
     employee_id TEXT UNIQUE,
     username    TEXT NOT NULL UNIQUE,
     full_name   TEXT NOT NULL,
+    first_name  TEXT,
+    last_name   TEXT,
     email       TEXT,
     department  TEXT,
     title       TEXT,
@@ -76,6 +78,33 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_access_user   ON access(user_id);
   CREATE INDEX IF NOT EXISTS idx_access_share  ON access(share_id);
 `);
+
+// --- Lightweight migrations for databases created before first_name/last_name existed ---
+function columnExists(table, col) {
+  return db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === col);
+}
+if (!columnExists('users', 'first_name')) {
+  db.exec('ALTER TABLE users ADD COLUMN first_name TEXT');
+}
+if (!columnExists('users', 'last_name')) {
+  db.exec('ALTER TABLE users ADD COLUMN last_name TEXT');
+}
+// Backfill first/last from existing full_name (first token = first name, rest = last name).
+const toBackfill = db
+  .prepare("SELECT id, full_name FROM users WHERE (first_name IS NULL OR first_name = '') AND full_name IS NOT NULL AND full_name <> ''")
+  .all();
+if (toBackfill.length) {
+  const upd = db.prepare('UPDATE users SET first_name = ?, last_name = ? WHERE id = ?');
+  const tx = db.transaction(() => {
+    for (const r of toBackfill) {
+      const parts = String(r.full_name).trim().split(/\s+/);
+      const first = parts.shift() || '';
+      const last = parts.join(' ');
+      upd.run(first, last, r.id);
+    }
+  });
+  tx();
+}
 
 function logAudit(actor, action, detail) {
   try {

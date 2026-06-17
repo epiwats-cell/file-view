@@ -38,8 +38,8 @@ function seedDemo() {
   }
 
   const insUser = db.prepare(
-    `INSERT INTO users (employee_id, username, full_name, email, department, title)
-     VALUES (?, ?, ?, ?, ?, ?)`
+    `INSERT INTO users (employee_id, username, full_name, first_name, last_name, email, department, title)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   );
   const insServer = db.prepare(
     'INSERT INTO servers (name, host, location, description) VALUES (?, ?, ?, ?)'
@@ -52,9 +52,9 @@ function seedDemo() {
   );
 
   const tx = db.transaction(() => {
-    const u1 = insUser.run('EMP001', 'somchai', 'Somchai Jaidee', 'somchai@example.com', 'Finance', 'Accountant').lastInsertRowid;
-    const u2 = insUser.run('EMP002', 'somsri', 'Somsri Rakdee', 'somsri@example.com', 'HR', 'HR Officer').lastInsertRowid;
-    const u3 = insUser.run('EMP003', 'piti', 'Piti Sukjai', 'piti@example.com', 'IT', 'System Engineer').lastInsertRowid;
+    const u1 = insUser.run('EMP001', 'somchai', 'Somchai Jaidee', 'Somchai', 'Jaidee', 'somchai@example.com', 'Finance', 'Accountant').lastInsertRowid;
+    const u2 = insUser.run('EMP002', 'somsri', 'Somsri Rakdee', 'Somsri', 'Rakdee', 'somsri@example.com', 'HR', 'HR Officer').lastInsertRowid;
+    const u3 = insUser.run('EMP003', 'piti', 'Piti Sukjai', 'Piti', 'Sukjai', 'piti@example.com', 'IT', 'System Engineer').lastInsertRowid;
 
     const s1 = insServer.run('FS-HQ-01', '10.0.0.10', 'Head Office', 'Primary head office file server').lastInsertRowid;
     const s2 = insServer.run('FS-DC-02', '10.0.1.20', 'Data Center', 'Secondary data center file server').lastInsertRowid;

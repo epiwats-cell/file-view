@@ -39,10 +39,11 @@ router.post('/users', upload.single('file'), (req, res) => {
   }
 
   const stmt = db.prepare(
-    `INSERT INTO users (employee_id, username, full_name, email, department, title, status)
-     VALUES (@employee_id, @username, @full_name, @email, @department, @title, @status)
+    `INSERT INTO users (employee_id, username, full_name, first_name, last_name, email, department, title, status)
+     VALUES (@employee_id, @username, @full_name, @first_name, @last_name, @email, @department, @title, @status)
      ON CONFLICT(username) DO UPDATE SET
-       employee_id=excluded.employee_id, full_name=excluded.full_name, email=excluded.email,
+       employee_id=excluded.employee_id, full_name=excluded.full_name,
+       first_name=excluded.first_name, last_name=excluded.last_name, email=excluded.email,
        department=excluded.department, title=excluded.title, status=excluded.status`
   );
 
@@ -50,10 +51,19 @@ router.post('/users', upload.single('file'), (req, res) => {
   const tx = db.transaction(() => {
     rows.forEach((row, i) => {
       const username = (row.username || '').trim();
-      const fullName = (row.full_name || row.fullname || row.name || '').trim();
-      if (!username || !fullName) {
+      let firstName = (row.first_name || row.firstname || row.fname || '').trim();
+      let lastName = (row.last_name || row.lastname || row.lname || row.surname || '').trim();
+      const givenFull = (row.full_name || row.fullname || row.name || '').trim();
+      // If only a full name was provided, split it (first token = first name).
+      if (!firstName && givenFull) {
+        const parts = givenFull.split(/\s+/);
+        firstName = parts.shift() || '';
+        lastName = parts.join(' ');
+      }
+      const fullName = givenFull || `${firstName} ${lastName}`.trim();
+      if (!username || !firstName) {
         summary.skipped++;
-        summary.errors.push(`Row ${i + 2}: missing username or full_name`);
+        summary.errors.push(`Row ${i + 2}: missing username or first name`);
         return;
       }
       try {
@@ -61,6 +71,8 @@ router.post('/users', upload.single('file'), (req, res) => {
           employee_id: row.employee_id || row.emp_id || null,
           username,
           full_name: fullName,
+          first_name: firstName,
+          last_name: lastName || null,
           email: row.email || null,
           department: row.department || row.dept || null,
           title: row.title || null,
@@ -152,8 +164,8 @@ router.post('/shares', upload.single('file'), (req, res) => {
 router.get('/template/users.csv', (req, res) => {
   res.type('text/csv').attachment('users-template.csv');
   res.send(
-    'employee_id,username,full_name,email,department,title,status\n' +
-      'EMP100,jdoe,John Doe,jdoe@example.com,Finance,Analyst,active\n'
+    'employee_id,username,first_name,last_name,email,department,title,status\n' +
+      'EMP100,jdoe,John,Doe,jdoe@example.com,Finance,Analyst,active\n'
   );
 });
 

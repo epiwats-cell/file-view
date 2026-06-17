@@ -5,13 +5,16 @@
 <section class="panel">
   <form method="post" action="<%= action %>" class="form">
     <div class="form-row">
-      <label>Full name *
-        <input type="text" name="full_name" value="<%= user.full_name || '' %>" required />
+      <label>First name *
+        <input type="text" name="first_name" value="<%= user.first_name || '' %>" required />
       </label>
-      <label>Username *
-        <input type="text" name="username" value="<%= user.username || '' %>" required />
+      <label>Last name
+        <input type="text" name="last_name" value="<%= user.last_name || '' %>" />
       </label>
     </div>
+    <label>Username *
+      <input type="text" name="username" value="<%= user.username || '' %>" required />
+    </label>
     <div class="form-row">
       <label>Employee ID
         <input type="text" name="employee_id" value="<%= user.employee_id || '' %>" />
