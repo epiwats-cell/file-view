@@ -70,6 +70,12 @@ chmod +x deploy/oracle-setup.sh
 
 The same script also works on Google Cloud / AWS free-tier VMs.
 
+## Google Cloud — Always Free (e2-micro)
+
+Often easier to get than Oracle's ARM capacity. Full walkthrough in
+**[`deploy/GCP.md`](deploy/GCP.md)** — create a free `e2-micro` VM in
+`us-central1`, open TCP 3000, then run the same `deploy/oracle-setup.sh`.
+
 ## Any VM (AWS EC2 / GCP / Azure / DigitalOcean)
 
 The simplest, fully self-controlled option:
