@@ -14,6 +14,7 @@ function readCsv(buffer) {
     skip_empty_lines: true,
     trim: true,
     bom: true,
+    relax_column_count: true,
   });
 }
 
@@ -102,14 +103,17 @@ router.post('/shares', upload.single('file'), (req, res) => {
   );
 
   const summary = { total: rows.length, ok: 0, skipped: 0, errors: [], servers: 0 };
+  let lastServerName = ''; // forward-fill: continuation rows may leave "server" blank
   const tx = db.transaction(() => {
     rows.forEach((row, i) => {
-      const serverName = (row.server || row.server_name || '').trim();
+      let serverName = (row.server || row.server_name || '').trim();
+      if (!serverName) serverName = lastServerName;
       if (!serverName) {
         summary.skipped++;
         summary.errors.push(`Row ${i + 2}: missing server name`);
         return;
       }
+      lastServerName = serverName;
       try {
         let server = getServer.get(serverName);
         if (!server) {
